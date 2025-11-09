@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeQuest - Turn Your Life Into a Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .character-panel {
+            text-align: center;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 4px solid #ffd700;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .char-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            margin: 12px 0;
+            text-align: left;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quest-input {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quest-input input, .quest-input select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .quest-input input:focus, .quest-input select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .quest-input input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .quest-input select {
+            min-width: 120px;
+        }
+
+        .quest-input button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quest-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .quests-list h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .quest-item {
+            background: linear-gradient(135deg, #f5f5f5, #fff);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            animation: slideInLeft 0.5s ease-out;
+            gap: 10px;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .quest-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .quest-item.completed {
+            opacity: 0.6;
+            border-left-color: #00cc00;
+        }
+
+        .quest-item.completed .quest-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .quest-text {
+            flex: 1;
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+
+        .quest-time {
+            background: #e3f2fd;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #1976d2;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .quest-reward {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .reward-badge {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: bold;
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #fff3cd;
+        }
+
+        .xp-badge {
+            color: #667eea;
+        }
+
+        .complete-btn {
+            padding: 8px 16px;
+            background: #00cc00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .complete-btn:hover:not(:disabled) {
+            background: #00aa00;
+            transform: scale(1.05);
+        }
+
+        .complete-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .delete-btn {
+            padding: 8px 12px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .delete-btn:hover {
+            background: #cc0000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .quest-item {
+                flex-wrap: wrap;
+            }
+        }
+
+        .sort-info {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: center;
+            padding: 8px;
+            background: #f0f0f0;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚔️ LifeQuest</h1>
+            <p>Turn Your Daily Life Into a Game</p>
+        </div>
+
+        <!-- Left Sidebar: Character Panel -->
+        <div class="panel character-panel">
+            <div class="avatar" id="avatar">🧙</div>
+            <div class="char-name" id="charName">Adventurer</div>
+            <div class="level-badge">Level <span id="level">1</span></div>
+
+            <div class="stat">
+                <div class="stat-label">Experience Points</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+                <small id="xpText">0 / 100 XP</small>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">💰 Coins</div>
+                <div style="font-weight: bold; color: #ffd700; margin-top: 5px;" id="coins">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">🔥 Current Streak</div>
+                <div style="font-weight: bold; color: #ff6b6b; margin-top: 5px;" id="streak">0 days</div>
+            </div>
+        </div>
+
+        <!-- Main Content: Quests -->
+        <div class="main-content">
+            <div class="panel">
+                <div class="quest-input">
+                    <input type="text" id="questInput" placeholder="Enter a new quest..." />
+                    <select id="timeSelect">
+                        <option value="5">5 min</option>
+                        <option value="15">15 min</option>
+                        <option value="30" selected>30 min</option>
+                        <option value="60">1 hour</option>
+                        <option value="120">2 hours</option>
+                        <option value="180">3 hours</option>
+                    </select>
+                    <button onclick="addQuest()">Add Quest</button>
+                </div>
+            </div>
+
+            <div class="panel quests-list">
+                <div class="sort-info">📊 Quests sorted by time (longer tasks = more XP)</div>
+                <h2>📜 Active Quests</h2>
+                <div id="questsList" class="empty-state">
+                    No quests yet. Add one to begin your adventure!
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Skins -->
+        <div class="panel">
+            <div class="skins-panel">
+                <h3>👤 Avatar Skins</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;" id="skinsGrid">
+                    <div class="skin active" onclick="selectSkin('🧙', 0, 0)" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; background: #f9f9f9;">
+                        <div style="font-size: 2em; margin-bottom: 8px;">🧙</div>
+                        <div style="font-size: 0.9em; font-weight: bold;">Wizard</div>
+                        <div style="font-size: 0.8em; color: #ffd700; margin-top: 5px;">Free</div>
+                    </div>
+                    <div class="skin" onclick="selectSkin('🦸', 1, 150)" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; background: #f9f9f9;">
+                        <div style="font-size: 2em; margin-bottom: 8px;">🦸</div>
+                        <div style="font-size: 0.9em; font-weight: bold;">Hero</div>
+                        <div style="font-size: 0.8em; color: #ffd700; margin-top: 5px;">150 coins</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            coins: 0,
+            streak: 0,
+            avatar: '🧙',
+            quests: []
+        };
+
+        function calculateXP(timeMinutes) {
+            return Math.ceil(timeMinutes / 5 * 10);
+        }
+
+        function addQuest() {
+            const input = document.getElementById('questInput');
+            const timeSelect = document.getElementById('timeSelect');
+            const questText = input.value.trim();
+            const timeMinutes = parseInt(timeSelect.value);
+
+            if (!questText) {
+                alert('Enter a quest name!');
+                return;
+            }
+
+            const xpReward = calculateXP(timeMinutes);
+
+            const quest = {
+                id: Date.now(),
+                text: questText,
+                completed: false,
+                timeMinutes: timeMinutes,
+                xpReward: xpReward,
+                coinReward: Math.ceil(timeMinutes / 10)
+            };
+
+            gameState.quests.push(quest);
+            input.value = '';
+            renderQuests();
+        }
+
+        function completeQuest(id) {
+            const quest = gameState.quests.find(q => q.id === id);
+            if (!quest) return;
+
+            quest.completed = true;
+            gameState.xp += quest.xpReward;
+            gameState.coins += quest.coinReward;
+            gameState.streak += 1;
+
+            checkLevelUp();
+            renderQuests();
+            updateStats();
+        }
+
+        function deleteQuest(id) {
+            gameState.quests = gameState.quests.filter(q => q.id !== id);
+            renderQuests();
+        }
+
+        function checkLevelUp() {
+            while (gameState.xp >= gameState.maxXp) {
+                gameState.xp -= gameState.maxXp;
+                gameState.level += 1;
+                gameState.maxXp = Math.floor(gameState.maxXp * 1.15);
+                gameState.coins += 50;
+            }
+        }
+
+        function renderQuests() {
+            const list = document.getElementById('questsList');
+            const activeQuests = gameState.quests.filter(q => !q.completed);
+            const completedQuests = gameState.quests.filter(q => q.completed);
+            const allQuests = [...activeQuests.sort((a, b) => b.timeMinutes - a.timeMinutes), ...completedQuests];
+
+            if (gameState.quests.length === 0) {
+                list.innerHTML = '<div class="empty-state">No quests yet. Add one to begin your adventure!</div>';
+                return;
+            }
+
+            list.innerHTML = allQuests.map(quest => `
+                <div class="quest-item ${quest.completed ? 'completed' : ''}">
+                    <div class="quest-text">${quest.text}</div>
+                    <div class="quest-time">⏱️ ${quest.timeMinutes} min</div>
+                    <div class="quest-reward">
+                        <div class="reward-badge xp-badge">+${quest.xpReward} XP</div>
+                    </div>
+                    <button class="complete-btn" ${quest.completed ? 'disabled' : ''} onclick="completeQuest(${quest.id})">
+                        ${quest.completed ? '✓ Done' : 'Complete'}
+                    </button>
+                    <button class="delete-btn" onclick="deleteQuest(${quest.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('coins').textContent = gameState.coins;
+            document.getElementById('streak').textContent = gameState.streak + ' days';
+            document.getElementById('charName').textContent = 'Level ' + gameState.level + ' Hero';
+            
+            const xpPercent = (gameState.xp / gameState.maxXp) * 100;
+            document.getElementById('xpFill').style.width = xpPercent + '%';
+            document.getElementById('xpText').textContent = gameState.xp + ' / ' + gameState.maxXp + ' XP';
+        }
+
+        function selectSkin(emoji, skinIndex, price) {
+            if (skinIndex === 0 || gameState.coins >= price) {
+                if (gameState.coins < price && skinIndex !== 0) {
+                    alert('Not enough coins! You need ' + (price - gameState.coins) + ' more.');
+                    return;
+                }
+
+                if (skinIndex !== 0) {
+                    gameState.coins -= price;
+                }
+
+                gameState.avatar = emoji;
+                document.getElementById('avatar').textContent = emoji;
+                updateStats();
+            }
+        }
+
+        updateStats();
+        renderQuests();
+    </script>
+</body>
+</html>
