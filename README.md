@@ -5,6 +5,8 @@ A gamified productivity app that turns daily tasks into RPG quests. Complete tas
 A gamified productivity application that transforms daily tasks into engaging quests. Complete objectives, earn experience points, unlock achievements, and compete with friends in a fantasy RPG-style interface.
 
 ## 🎮 Features
+### AI AGENT:
+https://studio.lyzr.ai/agent/69107bda682fef1ac4cf79c0/
 
 ### Core Gameplay
 - **Quest System** - Add daily tasks with customizable time estimates (5 min - 3 hours)
